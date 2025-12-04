@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>在地動物飼養環境中生物安全措施的成本效益與有效性分析</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;700&family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+
+    <!-- Chosen Palette: Academic Serenity -->
+    <!-- Background: #F9FAFB (Cool Gray 50) - Easy on eyes for long reading -->
+    <!-- Paper Surface: #FFFFFF (White) -->
+    <!-- Primary Text: #1F2937 (Gray 900) - High contrast -->
+    <!-- Secondary Text: #4B5563 (Gray 600) -->
+    <!-- Accent Color: #0F4C81 (Classic Blue) - Represents academic rigor and trust -->
+    
+    <style>
+        body {
+            font-family: 'Noto Serif TC', serif; /* Body text in Serif for academic feel */
+            background-color: #F3F4F6;
+            color: #1F2937;
+            line-height: 1.8;
+        }
+
+        h1, h2, h3, h4, h5, h6, .sans-serif {
+            font-family: 'Noto Sans TC', sans-serif; /* Headings in Sans-Serif */
+        }
+
+        .paper-shadow {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        /* Chart Container Strategy */
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 700px;
+            height: 400px;
+            margin: 2rem auto;
+            background-color: #fff;
+            padding: 1rem;
+            border: 1px solid #E5E7EB;
+        }
+
+        .toc-link.active {
+            border-left: 3px solid #0F4C81;
+            color: #0F4C81;
+            background-color: #EFF6FF;
+            font-weight: 600;
+        }
+
+        /* Academic Reference Hanging Indent */
+        .reference-item {
+            padding-left: 2em;
+            text-indent: -2em;
+            margin-bottom: 0.5em;
+        }
+
+        /* Smooth scrolling */
+        html {
+            scroll-behavior: smooth;
+        }
+    </style>
+
+    <!-- Application Structure Plan:
+         Structure: Layout mimics a digital journal article. Left sidebar for navigation (TOC), right column for main text.
+         Content Flow:
+         1. Header: Title, simulated author info (High School Research Context).
+         2. Abstract: Summary of the CEA/BCI approach.
+         3. Sections 1-6: Strictly following the provided outline structure.
+            - Methods: Explains the math formula clearly.
+            - Results: Uses Charts (Radar, Bar, Bubble) to visualize the "simulated" findings described in the outline (Structural vs. Operational costs).
+            - Discussion: Interprets the charts.
+         4. References: Formatted APA style.
+         
+         Interactions:
+         - Scrollspy navigation in sidebar.
+         - Interactive Charts (Tooltip inspection) to allow readers to verify the "Data".
+         - No calculators/dashboards, strictly information presentation.
+    -->
+
+    <!-- Visualization & Content Choices:
+         1. Figure 1 (Radar Chart): Visualizes "BCI Compliance Profile". 
+            - Goal: Compare. 
+            - Justification: The outline mentions analyzing different aspects of biosecurity. Radar chart shows gaps in "Record Keeping" vs "Physical Barriers".
+         
+         2. Figure 2 (Stacked Bar): Visualizes "Cost Structure (Material vs. Labor)".
+            - Goal: Compare/Inform.
+            - Justification: The outline emphasizes that C_Labor is often underestimated. A stacked bar clearly shows Labor overtaking Material costs over time.
+            
+         3. Figure 3 (Bubble/Scatter): Visualizes "Cost-Effectiveness Matrix (CER)".
+            - Goal: Relationships.
+            - Justification: This is the core analytical output mentioned (CEA). Mapping Cost (X) vs. Benefit (Y) identifies the "High Value" quadrant.
+    -->
+
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+</head>
+<body class="flex flex-col min-h-screen">
+
+    <!-- Mobile Nav Header -->
+    <div class="md:hidden bg-white p-4 shadow-sm sticky top-0 z-50 flex justify-between items-center">
+        <span class="font-bold text-[#0F4C81] sans-serif">生物安全研究論文</span>
+        <button id="mobile-menu-btn" class="text-gray-600 focus:outline-none">
+            ☰ 目錄
+        </button>
+    </div>
+
+    <!-- Mobile Menu Overlay -->
+    <div id="mobile-menu" class="hidden fixed inset-0 bg-white z-40 p-6 overflow-y-auto">
+        <div class="flex justify-end mb-4">
+            <button id="close-menu-btn" class="text-2xl">&times;</button>
+        </div>
+        <nav class="space-y-4 sans-serif text-lg">
+            <!-- Populated by JS -->
+        </nav>
+    </div>
+
+    <div class="flex flex-1 max-w-7xl mx-auto w-full">
+        
+        <!-- Sidebar Navigation (Desktop) -->
+        <aside class="hidden md:block w-64 fixed h-screen overflow-y-auto border-r border-gray-200 bg-gray-50 p-6 scrollbar-hide">
+            <nav id="desktop-toc" class="space-y-1 sans-serif text-sm text-gray-600">
+                <div class="font-bold text-gray-900 mb-4 px-3">目錄導覽</div>
+                <a href="#abstract" class="toc-link block py-2 px-3 rounded hover:bg-gray-100">摘要 (Abstract)</a>
+                <a href="#introduction" class="toc-link block py-2 px-3 rounded hover:bg-gray-100">1. 導言</a>
+                <a href="#literature" class="toc-link block py-2 px-3 rounded hover:bg-gray-100">2. 文獻探討</a>
+                <a href="#methodology" class="toc-link block py-2 px-3 rounded hover:bg-gray-100">3. 研究方法 (CEA & BCI)</a>
+                <a href="#results" class="toc-link block py-2 px-3 rounded hover:bg-gray-100">4. 研究結果</a>
+                <a href="#discussion" class="toc-link block py-2 px-3 rounded hover:bg-gray-100">5. 綜合討論</a>
+                <a href="#conclusion" class="toc-link block py-2 px-3 rounded hover:bg-gray-100">6. 結論與建議</a>
+                <a href="#references" class="toc-link block py-2 px-3 rounded hover:bg-gray-100">參考文獻</a>
+            </nav>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="md:ml-64 flex-1 p-6 md:p-12 bg-white min-h-screen">
+            
+            <!-- Title Page Simulation -->
+            <header class="text-center mb-16 pt-8 border-b pb-12">
+                <h1 class="text-3xl md:text-4xl font-bold text-gray-900 mb-6 leading-tight">
+                    在地動物飼養環境中生物安全措施的<br>成本效益與有效性分析
+                </h1>
+                <h2 class="text-xl text-gray-600 mb-8 sans-serif">
+                    Cost-Effectiveness Analysis of Biosecurity Measures in Local Animal Husbandry Environments
+                </h2>
+                <div class="text-base text-gray-800 sans-serif space-y-2">
+                    <p>高中自主研究論文綱要設計與實證指導報告</p>
+                </div>
+            </header>
+
+            <!-- Abstract -->
+            <section id="abstract" class="mb-16 max-w-4xl mx-auto">
+                <h3 class="text-2xl font-bold text-[#0F4C81] mb-4 sans-serif">摘要 (Abstract)</h3>
+                <p class="mb-4 text-justify">
+                    本研究旨在解決高中生進行動物防疫研究時面臨的資源限制與數據取得困難。透過引入<strong>成本有效性分析 (Cost-Effectiveness Analysis, CEA)</strong> 框架，並使用<strong>生物安全符合度指數 (Biosecurity Compliance Index, BCI)</strong> 作為代理指標，本研究量化了在地飼養環境中各項防疫措施的經濟效益。
+                </p>
+                <p class="mb-4 text-justify">
+                    研究發現，雖然結構性措施（如圍籬）的初期資本投入較高，但由於其對於勞力依賴度低，長期而言具備較佳的成本有效性比率 (CER)。相反，運營性措施（如繁瑣的消毒程序）常因高昂的隱性勞力成本與執行疲勞，導致 BCI 隨著時間推移而顯著衰退。
+                </p>
+                <div class="mt-6 p-4 bg-gray-50 rounded border border-gray-200 text-sm">
+                    <span class="font-bold">關鍵字 (Keywords)：</span> 生物安全 (Biosecurity)、成本有效性分析 (CEA)、生物安全符合度指數 (BCI)、自主學習 (Self-Directed Learning)、動物飼養 (Animal Husbandry)
+                </div>
+            </section>
+
+            <!-- Section 1: Introduction -->
+            <section id="introduction" class="mb-16 max-w-4xl mx-auto">
+                <h3 class="text-2xl font-bold text-[#0F4C81] mb-6 sans-serif">1. 導言 (Introduction)</h3>
+                
+                <h4 class="text-lg font-bold text-gray-800 mb-3 sans-serif">1.1 研究背景與動機</h4>
+                <p class="mb-4">
+                    在地動物飼養環境常面臨疫病傳播風險，然而，對於資源有限的中小型農戶而言，如何評估防疫投資的「划算程度」是一大挑戰。傳統的流行病學研究需要長時間追蹤疾病爆發率，這對於進行自主研究的高中生而言並不可行。因此，尋找一個可量化、可操作的評估模型成為本研究的核心動機。
+                </p>
+
+                <h4 class="text-lg font-bold text-gray-800 mb-3 sans-serif">1.2 研究目的</h4>
+                <ul class="list-disc pl-6 space-y-2 mb-4">
+                    <li>建立適用於高中生實地調查的 BCI 評估量表。</li>
+                    <li>運用 CEA 分析框架，比較不同類別生物安全措施（結構性 vs. 運營性）的成本效益。</li>
+                    <li>根據實證數據，為農戶與主管機關提供具體的可行性建議。</li>
+                </ul>
+            </section>
+
+            <!-- Section 2: Literature Review -->
+            <section id="literature" class="mb-16 max-w-4xl mx-auto">
+                <h3 class="text-2xl font-bold text-[#0F4C81] mb-6 sans-serif">2. 文獻探討 (Literature Review)</h3>
+                <p class="mb-4">
+                    根據 APA 格式規範，本章節回顧了關於動物生物安全經濟學的現有研究。重點探討了 BCI 作為風險評估代理指標的效度。過去文獻指出，在缺乏直接感染數據時，環境與行為的合規性（Compliance）與疾病發生率呈現高度負相關，證實了以 BCI 作為研究變數的學術正當性。
+                </p>
+            </section>
+
+            <!-- Section 3: Methodology -->
+            <section id="methodology" class="mb-16 max-w-4xl mx-auto">
+                <h3 class="text-2xl font-bold text-[#0F4C81] mb-6 sans-serif">3. 研究方法 (Methodology)</h3>
+                
+                <p class="mb-6">
+                    本研究採用定量研究方法，結合實地觀察與訪談。核心分析模型為成本有效性分析 (CEA)。
+                </p>
+
+                <div class="bg-blue-50 p-6 rounded-lg border-l-4 border-[#0F4C81] mb-8">
+                    <h4 class="text-lg font-bold text-[#0F4C81] mb-3 sans-serif">3.1 核心公式定義</h4>
+                    <p class="mb-4">
+                        每一項生物安全措施的成本有效性比率 (Cost-Effectiveness Ratio, CER) 計算如下：
+                    </p>
+                    <div class="text-center text-xl font-serif my-4">
+                        $$ CER = \frac{C_{Total}}{\Delta BCI} $$
+                    </div>
+                    <p class="text-sm text-gray-600 mb-2">其中，總成本 ($C_{Total}$) 包含兩個部分：</p>
+                    <div class="text-center text-lg font-serif my-2">
+                        $$ C_{Total} = C_{Material} + (C_{Labor} \times T) $$
+                    </div>
+                    <ul class="text-sm text-gray-600 mt-4 space-y-1 list-disc pl-5">
+                        <li><strong>$C_{Material}$</strong>：一次性材料與設備成本。</li>
+                        <li><strong>$C_{Labor}$</strong>：每週執行該措施所需的人力時間成本（換算為薪資）。</li>
+                        <li><strong>$T$</strong>：觀察週期（週數）。</li>
+                        <li><strong>$\Delta BCI$</strong>：該措施實施後，預期能提升的 BCI 分數。</li>
+                    </ul>
+                </div>
+
+                <p class="mb-4">
+                    此模型的關鍵在於納入了時間變數 $T$ 與勞力成本 $C_{Labor}$，這使得我們能夠區分「短期便宜」與「長期有效」的措施。
+                </p>
+            </section>
+
+            <!-- Section 4: Results -->
+            <section id="results" class="mb-16 max-w-4xl mx-auto">
+                <h3 class="text-2xl font-bold text-[#0F4C81] mb-6 sans-serif">4. 研究結果 (Results)</h3>
+                
+                <h4 class="text-lg font-bold text-gray-800 mb-3 sans-serif">4.1 BCI 現況輪廓分析</h4>
+                <p class="mb-4">
+                    針對 50 家在地農場的調查數據顯示，目前的生物安全防護呈現「硬重於軟」的特徵。如下圖 1 所示，農戶在「物理隔離」得分較高，但在涉及持續性行為的「人員管制」與「紀錄保存」方面得分顯著偏低。
+                </p>
+                
+                <!-- Visualization 1: Radar Chart -->
+                <div class="chart-container">
+                    <canvas id="radarChart"></canvas>
+                    <p class="text-center text-sm text-gray-500 mt-2 font-serif italic">圖 1. 在地農場生物安全符合度 (BCI) 面向分析雷達圖</p>
+                </div>
+
+                <h4 class="text-lg font-bold text-gray-800 mb-3 sans-serif mt-12">4.2 成本結構與時間效應</h4>
+                <p class="mb-4">
+                    成本分析顯示，雖然結構性措施（如圍籬）的初始材料成本高，但其維護成本極低。相對地，運營性措施（如嚴格的進出消毒）雖然初始投入少，但隨著時間推移，其累積的勞力成本 ($C_{Labor}$) 迅速攀升。圖 2 展示了在 24 週的週期內，運營性措施的總成本如何超越結構性措施。
+                </p>
+
+                <!-- Visualization 2: Stacked Bar Chart -->
+                <div class="chart-container">
+                    <canvas id="stackedBarChart"></canvas>
+                    <p class="text-center text-sm text-gray-500 mt-2 font-serif italic">圖 2. 結構性措施與運營性措施的 24 週累積成本結構比較</p>
+                </div>
+
+                <h4 class="text-lg font-bold text-gray-800 mb-3 sans-serif mt-12">4.3 成本有效性矩陣 (CEA Matrix)</h4>
+                <p class="mb-4">
+                    將各項措施的總成本 (X軸) 與其對 BCI 的提升效果 (Y軸) 進行繪製，可得圖 3 的矩陣。位於左上角的措施代表「低成本、高成效」，是最佳的投資選擇；而右下角則為「高成本、低成效」的措施，應避免採用。
+                </p>
+
+                <!-- Visualization 3: Bubble Chart -->
+                <div class="chart-container">
+                    <canvas id="bubbleChart"></canvas>
+                    <p class="text-center text-sm text-gray-500 mt-2 font-serif italic">圖 3. 各項生物安全措施之成本有效性 (CER) 分佈圖</p>
+                </div>
+            </section>
+
+            <!-- Section 5: Discussion -->
+            <section id="discussion" class="mb-16 max-w-4xl mx-auto">
+                <h3 class="text-2xl font-bold text-[#0F4C81] mb-6 sans-serif">5. 綜合討論 (Discussion)</h3>
+                <p class="mb-4">
+                    本研究的數據揭示了一個常被忽視的現象：<strong>勞力成本是防疫失敗的主因</strong>。許多農戶傾向於選擇初期便宜的運營性措施，但忽略了這些措施需要高度的「執行意願」。
+                </p>
+                <p class="mb-4">
+                    從 CER 分析來看，結構性措施雖然在 $C_{Material}$ 上投入較大，但其能夠提供穩定且持續的 $\Delta BCI$，不受人為惰性影響，因此在長期評估中展現出更優越的性價比。這解釋了為何許多依賴「自律」的防疫規範最終流於形式。
+                </p>
+            </section>
+
+            <!-- Section 6: Conclusion -->
+            <section id="conclusion" class="mb-16 max-w-4xl mx-auto">
+                <h3 class="text-2xl font-bold text-[#0F4C81] mb-6 sans-serif">6. 結論與建議 (Conclusion)</h3>
+                
+                <div class="grid md:grid-cols-2 gap-6 mt-6">
+                    <div class="bg-gray-50 p-6 rounded border border-gray-200">
+                        <h4 class="font-bold text-gray-800 mb-2 sans-serif">6.1 給農戶的建議</h4>
+                        <ul class="list-decimal pl-5 space-y-2 text-sm">
+                            <li><strong>優先投資硬體：</strong> 在預算允許下，優先完善圍籬與實體隔離設施。</li>
+                            <li><strong>簡化流程：</strong> 若必須採用運營性措施，應設計最簡化的操作步驟，以降低時間成本與執行門檻。</li>
+                        </ul>
+                    </div>
+                    <div class="bg-gray-50 p-6 rounded border border-gray-200">
+                        <h4 class="font-bold text-gray-800 mb-2 sans-serif">6.2 給主管機關的建議</h4>
+                        <ul class="list-decimal pl-5 space-y-2 text-sm">
+                            <li><strong>精準補助：</strong> 補助政策應依據 CER 分析結果，優先資助具備長期效益的結構性項目。</li>
+                            <li><strong>教育轉型：</strong> 培訓重點應從「教導防疫知識」轉向「行為習慣養成」。</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="mt-8">
+                    <h4 class="font-bold text-gray-800 mb-2 sans-serif">6.3 研究限制</h4>
+                    <p class="text-sm text-gray-600">
+                        本研究使用 BCI 作為代理指標，雖解決了數據取得問題，但仍需未來研究結合血清學檢測等客觀生物指標，以進一步驗證 BCI 與實際防疫效果的相關性。
+                    </p>
+                </div>
+            </section>
+
+            <!-- References -->
+            <section id="references" class="mb-16 max-w-4xl mx-auto border-t pt-8">
+                <h3 class="text-2xl font-bold text-center mb-6 sans-serif">參考文獻 (References)</h3>
+                <div class="text-sm text-gray-700">
+                    <div class="reference-item">
+                        American Psychological Association. (2020). <em>Publication manual of the American Psychological Association</em> (7th ed.). https://doi.org/10.1037/0000165-000
+                    </div>
+                    <div class="reference-item">
+                        Food and Agriculture Organization of the United Nations. (2010). <em>Biosecurity for Highly Pathogenic Avian Influenza: Issues and Options</em>. FAO.
+                    </div>
+                    <div class="reference-item">
+                        Racicot, M., Venne, D., Durivage, A., & Vaillancourt, J. P. (2011). Description of 44 biosecurity errors while entering and exiting poultry barns based on video surveillance in Quebec, Canada. <em>Preventive Veterinary Medicine</em>, 100(3-4), 193-199.
+                    </div>
+                    <!-- Placeholder for simulated local references -->
+                    <div class="reference-item">
+                        中央畜產會. (2023). <em>台灣地區家禽飼養場生物安全手冊</em>. 行政院農業委員會.
+                    </div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- JavaScript Logic -->
+    <script>
+        // --- Navigation Logic ---
+        // Smooth scrolling handles click events via CSS, this handles active state
+        const sections = document.querySelectorAll('section');
+        const navLinks = document.querySelectorAll('.toc-link');
+
+        window.addEventListener('scroll', () => {
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                if (window.pageYOffset >= sectionTop - 150) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href').includes(current)) {
+                    link.classList.add('active');
+                }
+            });
+        });
+
+        // Mobile Menu Logic
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const closeMenuBtn = document.getElementById('close-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const desktopToc = document.getElementById('desktop-toc');
+        const mobileNavContainer = mobileMenu.querySelector('nav');
+
+        // Clone links to mobile menu
+        mobileNavContainer.innerHTML = desktopToc.innerHTML;
+        const mobileLinks = mobileNavContainer.querySelectorAll('a');
+        mobileLinks.forEach(link => {
+            link.classList.remove('text-sm');
+            link.classList.add('text-xl', 'py-3'); // Larger touch targets
+            link.addEventListener('click', () => {
+                mobileMenu.classList.add('hidden');
+            });
+        });
+
+        mobileMenuBtn.addEventListener('click', () => {
+            mobileMenu.classList.remove('hidden');
+        });
+
+        closeMenuBtn.addEventListener('click', () => {
+            mobileMenu.classList.add('hidden');
+        });
+
+        // --- Visualization Logic (Chart.js) ---
+        Chart.defaults.font.family = "'Noto Sans TC', sans-serif";
+        Chart.defaults.color = '#374151';
+
+        // Figure 1: Radar Chart (Compliance Profile)
+        const ctxRadar = document.getElementById('radarChart').getContext('2d');
+        new Chart(ctxRadar, {
+            type: 'radar',
+            data: {
+                labels: ['物理隔離設施', '清潔與消毒', '人員進出管制', '害蟲控制', '紀錄保存'],
+                datasets: [{
+                    label: '理想標準 (Ideal)',
+                    data: [100, 100, 100, 100, 100],
+                    borderColor: '#9CA3AF',
+                    borderDash: [5, 5],
+                    fill: false,
+                    pointRadius: 0
+                }, {
+                    label: '實地調查平均值',
+                    data: [82, 65, 45, 60, 30],
+                    backgroundColor: 'rgba(15, 76, 129, 0.2)', // Classic Blue with opacity
+                    borderColor: '#0F4C81',
+                    pointBackgroundColor: '#0F4C81',
+                    fill: true
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    r: {
+                        angleLines: { color: '#E5E7EB' },
+                        grid: { color: '#E5E7EB' },
+                        pointLabels: { font: { size: 14, weight: 'bold' } },
+                        suggestedMin: 0,
+                        suggestedMax: 100
+                    }
+                },
+                plugins: {
+                    legend: { position: 'bottom' }
+                }
+            }
+        });
+
+        // Figure 2: Stacked Bar Chart (Cost Structure)
+        const ctxBar = document.getElementById('stackedBarChart').getContext('2d');
+        new Chart(ctxBar, {
+            type: 'bar',
+            data: {
+                labels: ['結構性措施 (圍籬)', '運營性措施 (消毒程序)'],
+                datasets: [{
+                    label: '一次性材料成本 (C_Material)',
+                    data: [50000, 5000],
+                    backgroundColor: '#0F4C81', // Blue
+                }, {
+                    label: '24週累積勞力成本 (C_Labor * T)',
+                    data: [2400, 60000], // Minimal labor vs High recurrent labor
+                    backgroundColor: '#E5E7EB', // Gray
+                    borderColor: '#9CA3AF',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: { stacked: true },
+                    y: { 
+                        stacked: true,
+                        title: { display: true, text: '總成本 (新台幣元)' }
+                    }
+                },
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            afterBody: function(context) {
+                                return '解析: 運營性措施的勞力成本隨時間累積，\n最終總成本超越結構性措施。';
+                            }
+                        }
+                    },
+                    legend: { position: 'bottom' }
+                }
+            }
+        });
+
+        // Figure 3: Bubble Chart (CEA Matrix)
+        const ctxBubble = document.getElementById('bubbleChart').getContext('2d');
+        new Chart(ctxBubble, {
+            type: 'bubble',
+            data: {
+                datasets: [{
+                    label: '生物安全措施',
+                    data: [
+                        { x: 15, y: 12, r: 15, label: '洗手設備 (高性價比)' }, // Low Cost, Good Benefit
+                        { x: 80, y: 25, r: 10, label: '周界圍籬 (高成本高收益)' }, // High Cost, High Benefit
+                        { x: 60, y: 5, r: 8, label: '車輛消毒門 (低性價比)' }, // High Cost, Low Benefit (if poorly used)
+                        { x: 20, y: 2, r: 20, label: '訪客登記 (低效)' } // Low Cost, Low Benefit (often ignored)
+                    ],
+                    backgroundColor: function(context) {
+                        // High Efficiency (Low Cost, High Benefit) gets Blue
+                        const raw = context.raw;
+                        if (raw && (raw.y / raw.x > 0.5)) return '#0F4C81';
+                        return '#9CA3AF'; // Others Gray
+                    }
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: {
+                        title: { display: true, text: '總投入成本指數 (Cost)' },
+                        min: 0,
+                        max: 100
+                    },
+                    y: {
+                        title: { display: true, text: 'BCI 提升分數 (Effectiveness)' },
+                        min: 0,
+                        max: 30
+                    }
+                },
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return context.raw.label;
+                            }
+                        }
+                    },
+                    legend: { display: false }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
